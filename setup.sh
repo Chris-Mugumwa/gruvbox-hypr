@@ -1,0 +1,76 @@
+#!/bin/bash
+# Hyprland Configuration Setup Script
+# Run this on your Linux PC to complete the setup
+
+set -e  # Exit on error
+
+echo "🚀 Setting up Hyprland configuration..."
+
+# 1. Create Scripts symlink
+echo "📁 Creating ~/Scripts symlink..."
+if [ -L "$HOME/Scripts" ]; then
+    echo "   ✓ Symlink already exists"
+elif [ -e "$HOME/Scripts" ]; then
+    echo "   ⚠️  ~/Scripts exists but is not a symlink. Please backup and remove it first."
+    exit 1
+else
+    ln -s "$HOME/.config/hypr-config/Scripts" "$HOME/Scripts"
+    echo "   ✓ Created symlink: ~/Scripts -> ~/.config/hypr-config/Scripts"
+fi
+
+# 2. Make all scripts executable
+echo "🔧 Making scripts executable..."
+chmod +x "$HOME/.config/hypr-config/Scripts"/*.sh
+echo "   ✓ All scripts are now executable"
+
+# 3. Check wallpaper directory structure
+echo "🖼️  Checking wallpaper directory..."
+if [ ! -d "$HOME/Pictures/Wallpapers" ]; then
+    echo "   ⚠️  ~/Pictures/Wallpapers not found!"
+    echo "   Creating directory..."
+    mkdir -p "$HOME/Pictures/Wallpapers"
+    echo "   📝 Please add theme folders (Everforest, Gruvbox, etc.) with wallpapers"
+else
+    echo "   ✓ Wallpaper directory exists"
+    echo "   📂 Available themes:"
+    ls -1 "$HOME/Pictures/Wallpapers" 2>/dev/null | sed 's/^/      /' || echo "      (none found)"
+fi
+
+# 4. Check for required dependencies
+echo "🔍 Checking dependencies..."
+MISSING_DEPS=()
+
+command -v rofi >/dev/null 2>&1 || MISSING_DEPS+=("rofi")
+command -v swww >/dev/null 2>&1 || MISSING_DEPS+=("swww")
+command -v waybar >/dev/null 2>&1 || MISSING_DEPS+=("waybar")
+command -v kitty >/dev/null 2>&1 || MISSING_DEPS+=("kitty")
+command -v swaync >/dev/null 2>&1 || MISSING_DEPS+=("swaync")
+command -v hypridle >/dev/null 2>&1 || MISSING_DEPS+=("hypridle")
+command -v magick >/dev/null 2>&1 || MISSING_DEPS+=("imagemagick")
+
+if [ ${#MISSING_DEPS[@]} -eq 0 ]; then
+    echo "   ✓ All required dependencies found"
+else
+    echo "   ⚠️  Missing dependencies:"
+    printf '      - %s\n' "${MISSING_DEPS[@]}"
+    echo ""
+    echo "   Install them with:"
+    echo "   sudo pacman -S ${MISSING_DEPS[*]}"
+fi
+
+# 5. Summary
+echo ""
+echo "✅ Setup complete!"
+echo ""
+echo "📋 Next steps:"
+echo "   1. If missing dependencies, install them (see above)"
+echo "   2. Restart Hyprland (Super+Shift+R or logout/login)"
+echo "   3. Try the theme switcher: Super+Shift+T"
+echo "   4. Try the wallpaper picker: Super+Shift+W"
+echo ""
+echo "🎨 Available keybindings:"
+echo "   Super+Shift+T  - Theme switcher"
+echo "   Super+Shift+W  - Wallpaper picker"
+echo "   Super+/        - Show all keybindings"
+echo "   Alt+K          - Toggle waybar"
+echo ""
