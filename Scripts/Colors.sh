@@ -51,10 +51,13 @@ ln -sf "$ROFI_FILE" "$ROFI_LINK"
 ln -sf "$HYPR_FILE" "$HYPR_LINK"
 ln -sf "$KITTY_FILE" "$KITTY_LINK"
 
+# Reload Hyprland to apply color changes
+hyprctl reload
+
 # Reload components
 pkill -SIGUSR2 waybar
 pkill swaync && swaync & disown
 
 # Reload Kitty (will affect new windows only)
-kill -SIGUSR1 $(pgrep kitty)
+kill -SIGUSR1 $(pgrep kitty) 2>/dev/null
 
