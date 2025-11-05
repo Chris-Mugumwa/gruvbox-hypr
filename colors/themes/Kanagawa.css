@@ -1,0 +1,20 @@
+@define-color bg-base         #1f1f28;  
+@define-color bg-surface      #1f1f28;
+@define-color bg-overlay      #2a2a37;  
+
+@define-color fg-main         #dcd7ba;  
+@define-color fg-muted        #2a2a37;  
+@define-color fg-strong       #d4c787;
+
+@define-color accent-primary  #7e9cd8;  
+@define-color accent-hover    #6a9589;  
+@define-color accent-active   #6581b8;  
+
+@define-color border-color    #29526E;  
+@define-color shadow-color    rgba(0, 0, 0, 0.45);
+
+@define-color danger-color    #e46876; 
+@define-color warning-color   #ff9e3b;
+@define-color info-color      #7fb4ca;
+@define-color success-color   #98bb6c;
+
