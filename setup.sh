@@ -6,22 +6,34 @@ set -e  # Exit on error
 
 echo "🚀 Setting up Hyprland configuration..."
 
-# 1. Create Scripts symlink
-echo "📁 Creating ~/Scripts symlink..."
+# 1. Find the Scripts directory
+SCRIPTS_DIR=""
+if [ -d "$HOME/.config/hypr/Scripts" ]; then
+    SCRIPTS_DIR="$HOME/.config/hypr/Scripts"
+elif [ -d "$HOME/.config/hypr-config/Scripts" ]; then
+    SCRIPTS_DIR="$HOME/.config/hypr-config/Scripts"
+else
+    echo "❌ Scripts directory not found in ~/.config/hypr/ or ~/.config/hypr-config/"
+    exit 1
+fi
+
+echo "📁 Found Scripts directory: $SCRIPTS_DIR"
+
+# 2. Create symlink
+echo "🔗 Creating ~/Scripts symlink..."
 if [ -L "$HOME/Scripts" ]; then
     echo "   ✓ Symlink already exists"
 elif [ -e "$HOME/Scripts" ]; then
     echo "   ⚠️  ~/Scripts exists but is not a symlink. Please backup and remove it first."
     exit 1
 else
-    ln -s "$HOME/.config/hypr-config/Scripts" "$HOME/Scripts"
-    echo "   ✓ Created symlink: ~/Scripts -> ~/.config/hypr-config/Scripts"
+    ln -s "$SCRIPTS_DIR" "$HOME/Scripts"
+    echo "   ✓ Created symlink: ~/Scripts -> $SCRIPTS_DIR"
 fi
 
-# 2. Make all scripts executable
+# 3. Make all scripts executable
 echo "🔧 Making scripts executable..."
-chmod +x "$HOME/.config/hypr-config/Scripts"/*.sh
-echo "   ✓ All scripts are now executable"
+chmod +x "$SCRIPTS_DIR"/*.sh 2>/dev/null && echo "   ✓ All scripts are now executable" || echo "   ⚠️  Could not make scripts executable"
 
 # 3. Check wallpaper directory structure
 echo "🖼️  Checking wallpaper directory..."
