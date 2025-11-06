@@ -269,6 +269,30 @@ hypr-config/
 
 ## Troubleshooting
 
+### First Time Setup - Theme System Not Initialized
+
+**IMPORTANT**: On first installation, the theme system needs to be initialized. If you see:
+- Rofi appears all gray with no wallpaper background
+- Colors/theming not working correctly
+- Kitty terminal has no color scheme
+
+**Solution**: Initialize the theme system:
+```bash
+# 1. Ensure wallpaper directories exist
+ls ~/Pictures/Wallpapers/
+# Should show: Graphite, Gruvbox, Everforest, etc.
+
+# 2. Run theme switcher to initialize
+~/Scripts/Theme.sh
+# Select any theme (e.g., Graphite)
+
+# 3. Verify symlinks were created
+ls -la ~/.config/colors/
+# Should show: theme.css, rofi_theme.rasi, colors.conf, colors-kitty.conf as symlinks
+```
+
+This creates the necessary symlinks and cache files that the configuration depends on.
+
 ### Hyprland won't start
 1. Check logs: `cat /tmp/hypr/$(ls -t /tmp/hypr/ | head -n 1)/hyprland.log`
 2. Verify all dependencies installed: `./setup.sh`
@@ -299,10 +323,34 @@ hypr-config/
 4. Review environment.conf settings
 5. Ensure mkinitcpio includes nvidia modules
 
-### Screen appears zoomed in
-1. Check monitor.conf syntax: `cat hypr/config/monitor.conf`
-2. Use explicit position: `monitor = ,3440x1440@165,0x0,1`
-3. Avoid "auto" for position parameter
+### Screen appears zoomed in / stretched / UI too large
+
+**This is actually normal for 34" ultrawide monitors!**
+
+A 34" monitor at 3440x1440 has ~109 pixels per inch (PPI), which is identical to a 27" monitor at 2560x1440 (~108 PPI). This means UI elements will appear the **same physical size** as on a 27" 1440p display - they're not actually "zoomed in," they're just displaying at the correct physical size for the pixel density.
+
+If you want UI elements to appear **smaller** (more screen real estate), you have two options:
+
+**Option 1: Fractional Scaling** (Recommended - keeps text sharp)
+Edit `hypr/config/monitor.conf`:
+```conf
+# Makes UI elements 20% smaller while maintaining sharpness
+monitor = ,3440x1440@165,0x0,1.25
+```
+
+**Option 2: XWayland Scaling** (For legacy X11 apps)
+Uncomment in `hypr/config/monitor.conf`:
+```conf
+xwayland {
+  force_zero_scaling = true
+}
+env = GDK_SCALE, 1.25
+```
+
+**Why does it feel "stretched"?**
+- If you're coming from a 27" 1440p monitor, everything will look exactly the same size
+- If you're used to a 24" 1080p monitor, things will appear larger (because the PPI is lower)
+- The 34" is just wider, not taller, than a 27" display
 
 ### Kitty colors not updating
 1. New Kitty windows should use new theme

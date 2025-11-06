@@ -77,9 +77,13 @@
             "on-scroll": 1,
             "on-click-right": "mode",
             "format": {
-                "months": "<span color='#ffead3'><b>{}</b></span>",
-                "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
-                "today": "<span color='#ff6699'><b>{}</b></span>"
+                // Using theme-neutral colors that work with gray/dark themes
+                // Months: bright white for emphasis
+                "months": "<span color='#e0e0e0'><b>{}</b></span>",
+                // Weekdays: softer white/gray
+                "weekdays": "<span color='#b0b0b0'><b>{}</b></span>",
+                // Today: cyan/blue accent (common in many themes)
+                "today": "<span color='#7aa2f7'><b>{}</b></span>"
             }
         },
         "actions": {
