@@ -7,13 +7,30 @@ set -e  # Exit on error
 echo "🚀 Setting up Hyprland configuration..."
 
 # 1. Find the Scripts directory
+# Detect where this script is running from
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "📍 Script running from: $SCRIPT_DIR"
+
 SCRIPTS_DIR=""
-if [ -d "$HOME/.config/hypr/Scripts" ]; then
+# First, check if Scripts is in the same directory as this setup.sh
+if [ -d "$SCRIPT_DIR/Scripts" ]; then
+    SCRIPTS_DIR="$SCRIPT_DIR/Scripts"
+# Then check common installation locations
+elif [ -d "$HOME/.config/hypr/Scripts" ]; then
     SCRIPTS_DIR="$HOME/.config/hypr/Scripts"
 elif [ -d "$HOME/.config/hypr-config/Scripts" ]; then
     SCRIPTS_DIR="$HOME/.config/hypr-config/Scripts"
+# Check if we're inside a hypr/hyprland folder structure
+elif [ -d "$(dirname "$SCRIPT_DIR")/Scripts" ]; then
+    SCRIPTS_DIR="$(dirname "$SCRIPT_DIR")/Scripts"
 else
-    echo "❌ Scripts directory not found in ~/.config/hypr/ or ~/.config/hypr-config/"
+    echo "❌ Scripts directory not found!"
+    echo "   Searched locations:"
+    echo "   - $SCRIPT_DIR/Scripts"
+    echo "   - $HOME/.config/hypr/Scripts"
+    echo "   - $HOME/.config/hypr-config/Scripts"
+    echo ""
+    echo "   Please ensure your repository is properly cloned/copied to ~/.config/"
     exit 1
 fi
 

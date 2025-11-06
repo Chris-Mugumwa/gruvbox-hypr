@@ -10,6 +10,7 @@ The following issues were addressed in this update:
 2. **Waybar Calendar Colors** - Fixed hardcoded warm colors to neutral theme-compatible colors
 3. **Autostart Configuration** - Ensured kitty and all essential services are enabled
 4. **README Documentation** - Added comprehensive troubleshooting for theme initialization
+5. **setup.sh Script Detection** - Fixed Scripts directory detection to work regardless of installation location
 
 ## On Your Linux Machine: Step-by-Step Setup
 
@@ -177,12 +178,34 @@ kitty --config ~/.config/kitty/kitty.conf
 
 ## Common Issues After Pull
 
+### "Scripts directory not found" when running setup.sh
+**Fix:**
+```bash
+# First, check where your config is actually located
+pwd  # You should be in ~/.config/something
+
+# Check if Scripts exists here
+ls -la Scripts
+
+# If Scripts exists in your current directory, the setup.sh should now work
+./setup.sh
+
+# If you're getting this error, your config might be in an unexpected location
+# The setup.sh will now show where it searched for Scripts
+```
+
+**The updated setup.sh now detects Scripts automatically from:**
+- Same directory as setup.sh
+- ~/.config/hypr/Scripts
+- ~/.config/hypr-config/Scripts
+- Parent directory of where setup.sh is located
+
 ### "command not found: ~/Scripts/Theme.sh"
 **Fix:**
 ```bash
 ls -la ~/Scripts
 # If it doesn't exist:
-cd ~/.config/hypr
+cd ~/.config/hypr  # or wherever your config is
 ./setup.sh
 ```
 
