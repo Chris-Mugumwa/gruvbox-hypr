@@ -5,7 +5,8 @@
     "output": [ "*" ],
     "position": "top",
     "mod": "dock",
-    "height": 49,
+    /* Reduced from 49px for better proportion on ultrawide/high-DPI monitors */
+    "height": 40,
     //"margin-right": 15,
     //"margin-left": 15,
     "exclusive": true,

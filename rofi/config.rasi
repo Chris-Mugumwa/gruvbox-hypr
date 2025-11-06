@@ -10,7 +10,8 @@ configuration {
     display-window:              " ";
     drun-display-format:         "{name}";
     window-format:               "{w}{t}";
-    font:                        "CascadiaCove Mono Nerd 18";
+    /* Reduced from 18 for better proportion on ultrawide monitors */
+    font:                        "CascadiaCove Mono Nerd 15";
     icon-theme:                  "Gruvbox-plus-dark";
 }
 
@@ -19,12 +20,14 @@ configuration {
 // Main //
 window {
     height: 60%;
-    width: 70%;
+    /* Reduced from 70% for better proportion on ultrawide monitors (21:9) */
+    width: 55%;
     transparency: "real";
     fullscreen: false;
     enabled: true;
     cursor:  "default";
-    border-radius: 20;
+    /* Consistent border-radius throughout (was mixed 20/15/10) */
+    border-radius: 16px;
     border: 3px;
     border-color: @main-br;
     background-color: @main-bg;
@@ -62,11 +65,11 @@ mode-switcher {
     background-color: #00000000;
     position: south;
     margin: 0em 0em 0.3em 0em;
-    border-radius: 15;
+    border-radius: 16px;
 }
 button {
     cursor: pointer;
-    border-radius: 1.5em;
+    border-radius: 16px;
     background-color: #ffffff26;
     text-color: @main-fg;
     padding: 0.7em 0.2em;
@@ -84,7 +87,7 @@ inputbar {
     children: [ "entry" ];
     background-color: #00000066;
     padding: 0.01em 1em;
-    border-radius: 20;
+    border-radius: 16px;
     margin: 0.6em 1em 0em 1em;
     position: north;
 }
@@ -131,7 +134,7 @@ element {
     padding: 0.4em 0.4em 0.4em 1.5em;
     cursor: pointer;
     background-color: transparent;
-    border-radius: 10;
+    border-radius: 12px;
     text-color: @main-fg;
 }
 element selected.normal {

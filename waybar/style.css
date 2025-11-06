@@ -5,8 +5,9 @@
     border-radius: 0px;
     font-family: "CaskaydiaCove Nerd Font", "JetBrainsMono Nerd Font";
     font-weight: bold;
-    font-size: 20px;
-    min-height: 26px;
+    /* Reduced from 20px for better proportion on ultrawide monitors */
+    font-size: 16px;
+    min-height: 22px;
     box-shadow: none;
     text-shadow: none;
 }
@@ -122,14 +123,14 @@ tooltip {
     padding: 0 4px;
 }
 
-/* Ends with rounded corners */
+/* Ends with rounded corners - uniform radius for cleaner look */
 #custom-r_end {
-    border-radius: 0px 19px 19px 0px;
+    border-radius: 0px 14px 14px 0px;
     margin-right: 8px;
     padding-right: 0px;
 }
 #custom-l_end {
-    border-radius: 19px 0px 0px 19px;
+    border-radius: 14px 0px 0px 14px;
     margin-left: 8px;
     padding-left: 0px;
 }
@@ -144,12 +145,12 @@ tooltip {
     padding-left: 0px;
 }
 #custom-rr_end {
-    border-radius: 0px 7px 7px 0px;
+    border-radius: 0px 14px 14px 0px;
     margin-right: 8px;
     padding-right: 0px;
 }
 #custom-rl_end {
-    border-radius: 7px 0px 0px 7px;
+    border-radius: 14px 0px 0px 14px;
     margin-left: 8px;
     padding-left: 0px;
 }

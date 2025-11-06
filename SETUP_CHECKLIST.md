@@ -20,18 +20,27 @@ cd ~/.config/hypr  # or wherever you cloned this repo
 git pull origin main
 ```
 
-### Step 2: Verify Dependencies
-Make sure all required packages are installed:
+### Step 2: Check Dependencies (NEW!)
+Use the comprehensive dependency checker:
 ```bash
-# Check if key programs exist
-which hyprland waybar rofi swww swaync kitty
-
-# If any are missing, install:
-sudo pacman -S hyprland waybar rofi swww swaync kitty \
-               imagemagick ffmpeg polkit-kde-agent \
-               networkmanager network-manager-applet \
-               brightnessctl playerctl wob
+cd ~/.config/hypr  # or wherever you cloned the repo
+chmod +x check_dependencies.sh
+./check_dependencies.sh
 ```
+
+This will check:
+- ✅ All required packages (Hyprland, waybar, rofi, etc.)
+- ✅ Graphics drivers (NVIDIA/AMD/Intel)
+- ✅ System utilities (imagemagick, ffmpeg, etc.)
+- ✅ Configuration files and symlinks
+- ✅ Theme system initialization status
+
+For detailed output:
+```bash
+./check_dependencies.sh --verbose
+```
+
+If any packages are missing, the script will show you the exact `pacman` command to install them.
 
 ### Step 3: Set Up Wallpaper Directory Structure
 ```bash
