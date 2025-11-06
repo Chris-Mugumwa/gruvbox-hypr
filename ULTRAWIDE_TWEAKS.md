@@ -19,16 +19,62 @@ This document explains all the optimizations made for 34" ultrawide (3440x1440) 
 ### Issue 2: Swaync Black Box
 **Problem**: Notification center appears as a black box with no styling
 
-**Cause**: Theme colors not initialized. Swaync imports `../colors/theme.css` which doesn't exist until you run the theme selector.
+**Cause**: Theme colors not initialized. Swaync imports `../colors/theme.css` which doesn't exist until you run the theme selector. All colors in swaync are defined using CSS variables like `@bg-base`, `@fg-main`, `@accent-primary`, etc. When the theme.css import fails, these variables are undefined and GTK renders everything as transparent/black.
 
 **Fix**:
 ```bash
 # Initialize the theme system:
 ~/Scripts/Theme.sh
-# Select any theme (e.g., Graphite)
+# Select your desired theme (e.g., Everforest, Graphite, Catppuccin)
 ```
 
 This creates the required `~/.config/colors/theme.css` symlink that swaync needs.
+
+**Verification Steps**:
+```bash
+# Check if theme symlink exists
+ls -la ~/.config/colors/theme.css
+
+# Should output something like:
+# theme.css -> themes/Everforest.css
+
+# If symlink doesn't exist or points to wrong theme:
+~/Scripts/Theme.sh  # Run theme selector to fix
+
+# After selecting theme, restart swaync:
+pkill swaync && swaync & disown
+```
+
+**Important**: All themes (Everforest, Graphite, Catppuccin, etc.) have the required color variables for swaync. The black box issue is caused by the symlink not existing or not being loaded, NOT by missing colors in the theme file.
+
+### Issue 3: Screen Timeout Disabled
+**Change**: Screen will never turn off automatically
+
+**What was changed**: All timeout listeners in `hypr/hypridle.conf` have been commented out:
+- Brightness dimming (was 80 seconds)
+- Screen lock (was 100 seconds)
+- Display power off (was 5 minutes)
+- System suspend (was 8 minutes)
+
+**To re-enable screen timeout**:
+Edit [hypr/hypridle.conf](hypr/hypridle.conf) and uncomment the desired listeners. Default values:
+```conf
+# Lock screen after 100 seconds
+listener {
+  timeout = 100
+  on-timeout = $LockScreen
+  on-resume = notify-send "Welcome back!"
+}
+
+# Turn off display after 5 minutes (300 seconds)
+listener {
+  timeout = 300
+  on-timeout = hyprctl dispatch dpms off
+  on-resume = hyprctl dispatch dpms on
+}
+```
+
+**Manual screen lock**: You can still manually lock the screen using `Super+L` keybinding.
 
 ---
 
