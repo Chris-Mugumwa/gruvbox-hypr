@@ -36,16 +36,34 @@ fi
 
 echo "📁 Found Scripts directory: $SCRIPTS_DIR"
 
-# 2. Create symlink
-echo "🔗 Creating ~/Scripts symlink..."
+# 2. Create symlinks
+echo "🔗 Creating configuration symlinks..."
+
+# Scripts symlink
 if [ -L "$HOME/Scripts" ]; then
-    echo "   ✓ Symlink already exists"
+    echo "   ✓ ~/Scripts symlink already exists"
 elif [ -e "$HOME/Scripts" ]; then
     echo "   ⚠️  ~/Scripts exists but is not a symlink. Please backup and remove it first."
     exit 1
 else
     ln -s "$SCRIPTS_DIR" "$HOME/Scripts"
     echo "   ✓ Created symlink: ~/Scripts -> $SCRIPTS_DIR"
+fi
+
+# Swaync config symlink (CRITICAL for notification center styling)
+if [ -d "$SCRIPT_DIR/swaync" ]; then
+    if [ -L "$HOME/.config/swaync" ]; then
+        echo "   ✓ ~/.config/swaync symlink already exists"
+    elif [ -e "$HOME/.config/swaync" ]; then
+        echo "   ⚠️  ~/.config/swaync exists but is not a symlink"
+        echo "      Backup your existing config and remove it, then run this script again"
+    else
+        ln -s "$SCRIPT_DIR/swaync" "$HOME/.config/swaync"
+        echo "   ✓ Created symlink: ~/.config/swaync -> $SCRIPT_DIR/swaync"
+        echo "      This fixes the 'swaync black box' issue"
+    fi
+else
+    echo "   ⚠️  swaync directory not found in $SCRIPT_DIR"
 fi
 
 # 3. Make all scripts executable

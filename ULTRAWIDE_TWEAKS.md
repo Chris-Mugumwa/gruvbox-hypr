@@ -17,35 +17,62 @@ This document explains all the optimizations made for 34" ultrawide (3440x1440) 
 **See** [Monitor Scaling section](#1-monitor-scaling-most-important) below for details.
 
 ### Issue 2: Swaync Black Box
-**Problem**: Notification center appears as a black box with no styling
+**Problem**: When clicking the swaync icon in waybar, the notification center appears as a black box covering the screen
 
-**Cause**: Theme colors not initialized. Swaync imports `../colors/theme.css` which doesn't exist until you run the theme selector. All colors in swaync are defined using CSS variables like `@bg-base`, `@fg-main`, `@accent-primary`, etc. When the theme.css import fails, these variables are undefined and GTK renders everything as transparent/black.
+**Root Cause**: Swaync is NOT loading the custom configuration!
 
-**Fix**:
+The config files are in your hypr-config directory, but swaync expects them at `~/.config/swaync/`. Without the custom config:
+1. Swaync uses default config (doesn't import theme colors)
+2. CSS variables (`@bg-base`, `@fg-main`, etc.) are undefined
+3. GTK renders undefined colors as transparent/black
+4. Result: Black box with no content
+
+**Fix** (Automatic - Run setup.sh):
 ```bash
-# Initialize the theme system:
-~/Scripts/Theme.sh
-# Select your desired theme (e.g., Everforest, Graphite, Catppuccin)
+# Run the setup script on your Linux machine:
+./setup.sh
 ```
 
-This creates the required `~/.config/colors/theme.css` symlink that swaync needs.
+This creates the required symlink: `~/.config/swaync` → `hypr-config/swaync/`
 
-**Verification Steps**:
+**Manual Fix** (If setup.sh doesn't work):
 ```bash
-# Check if theme symlink exists
-ls -la ~/.config/colors/theme.css
+# Find where you cloned hypr-config (usually ~/.config/)
+cd ~/.config/hypr-config  # or wherever your config is
 
-# Should output something like:
-# theme.css -> themes/Everforest.css
+# Create symlink
+ln -s "$(pwd)/swaync" ~/.config/swaync
 
-# If symlink doesn't exist or points to wrong theme:
-~/Scripts/Theme.sh  # Run theme selector to fix
-
-# After selecting theme, restart swaync:
+# Restart swaync
 pkill swaync && swaync & disown
 ```
 
-**Important**: All themes (Everforest, Graphite, Catppuccin, etc.) have the required color variables for swaync. The black box issue is caused by the symlink not existing or not being loaded, NOT by missing colors in the theme file.
+**Verification Steps**:
+```bash
+# 1. Verify swaync config symlink exists
+ls -la ~/.config/swaync
+# Should show: swaync -> /path/to/hypr-config/swaync
+
+# 2. Verify theme symlink exists
+ls -la ~/.config/colors/theme.css
+# Should show: theme.css -> themes/Everforest.css (or your chosen theme)
+
+# 3. Test swaync
+swaync-client -t -sw  # Toggle control center
+# Should show styled notification center, NOT a black box
+```
+
+**If Still Black After Fix**:
+Run the theme selector to initialize theme colors:
+```bash
+~/Scripts/Theme.sh
+# Select your desired theme (e.g., Everforest, Graphite, Catppuccin)
+# This creates ~/.config/colors/theme.css symlink
+```
+
+**Technical Details**: All themes (Everforest, Graphite, Catppuccin, etc.) have the required color variables. The black box occurs because either:
+1. ❌ Swaync config not symlinked (MOST COMMON - fixed by setup.sh)
+2. ❌ Theme colors not initialized (fixed by running Theme.sh)
 
 ### Issue 3: Screen Timeout Disabled
 **Change**: Screen will never turn off automatically
@@ -75,6 +102,50 @@ listener {
 ```
 
 **Manual screen lock**: You can still manually lock the screen using `Super+L` keybinding.
+
+### Issue 4: Black Screen on Startup (No Wallpaper)
+**Problem**: Screen appears completely black on first boot, only waybar is visible
+
+**Cause**: No wallpaper is loaded by default. The wallpaper system requires you to:
+1. Add wallpaper images to `~/Pictures/Wallpapers/[THEME]/` directory
+2. Manually select a wallpaper using the wallpaper picker
+
+The black screen you see is Hyprland's background color (rgba(16,16,16,1.0)).
+
+**Fix - Option 1: Use Wallpaper Picker** (Recommended):
+```bash
+# 1. Create wallpaper directory for your theme
+mkdir -p ~/Pictures/Wallpapers/Everforest
+
+# 2. Add your wallpaper images to that directory
+# (Download or copy your favorite wallpapers there)
+
+# 3. Open the wallpaper picker with keybind
+Super+Shift+W
+# Or run directly:
+~/Scripts/Wallpaper.sh Everforest
+```
+
+**Fix - Option 2: Set a Default Wallpaper**:
+Edit [hypr/config/autostart.conf](hypr/config/autostart.conf) after line 19 and add:
+```conf
+exec-once = swww img ~/Pictures/Wallpapers/Everforest/your-wallpaper.jpg --transition-type fade --transition-duration 2 &
+```
+
+**Wallpaper Directory Structure**:
+```
+~/Pictures/Wallpapers/
+├── Everforest/
+│   ├── wallpaper1.jpg
+│   ├── wallpaper2.png
+│   └── ...
+├── Graphite/
+│   └── ...
+└── Catppuccin/
+    └── ...
+```
+
+**Note**: The wallpaper system automatically generates thumbnails in `~/.cache/wall-cache/thumbs/` for the rofi picker.
 
 ---
 
