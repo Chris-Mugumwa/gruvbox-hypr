@@ -2,6 +2,36 @@
 
 This document explains all the optimizations made for 34" ultrawide (3440x1440) monitors and how to further customize the configuration.
 
+## ⚠️ CRITICAL: Known Issues & Fixes
+
+### Issue 1: "Invalid Scale" Error
+**Problem**: Hyprland shows "invalid scale" error on startup
+
+**Cause**: Fractional scaling support varies by system. Values like `1.15`, `1.20` may not work on all systems.
+
+**Fix**: Use safe scaling values:
+- `1.0` - Always works (default now)
+- `1.25` - Works on most systems
+- `1.5`, `2.0` - Always work
+
+**See** [Monitor Scaling section](#1-monitor-scaling-most-important) below for details.
+
+### Issue 2: Swaync Black Box
+**Problem**: Notification center appears as a black box with no styling
+
+**Cause**: Theme colors not initialized. Swaync imports `../colors/theme.css` which doesn't exist until you run the theme selector.
+
+**Fix**:
+```bash
+# Initialize the theme system:
+~/Scripts/Theme.sh
+# Select any theme (e.g., Graphite)
+```
+
+This creates the required `~/.config/colors/theme.css` symlink that swaync needs.
+
+---
+
 ## Overview
 
 The original rice configuration was designed for 27" 1440p monitors (16:9 aspect ratio). On a 34" ultrawide (21:9), several elements appeared oversized or stretched. This guide details all modifications made to optimize the experience.
@@ -18,38 +48,41 @@ They have nearly identical pixel density, so UI elements render at the same phys
 ### The Solution
 
 We've applied a multi-layered approach:
-1. **Global scaling** - Using Hyprland's monitor scaling (1.15x recommended)
-2. **Application-level tweaks** - Reducing font sizes and dimensions in waybar, rofi
+1. **Application-level tweaks** - Reducing font sizes and dimensions in waybar, rofi (SAFE, always works)
+2. **Optional scaling** - Using Hyprland's monitor scaling if supported by your system
 3. **Layout adjustments** - Optimizing proportions for 21:9 aspect ratio
 
 ---
 
 ## Changes Made
 
-### 1. Monitor Scaling (MOST IMPORTANT)
+### 1. Monitor Scaling (IMPORTANT - READ CAREFULLY)
 
 **File**: [hypr/config/monitor.conf](hypr/config/monitor.conf)
 
-**Change**: Default scaling changed from `1.0` to `1.15`
+**⚠️ CRITICAL**: Fractional scaling support varies! Default is now `1.0` (safe).
 
 ```conf
-# BEFORE:
-monitor = ,3440x1440@165,0x0,1
+# CURRENT (SAFE DEFAULT):
+monitor = ,3440x1440@165,0x0,1.0
 
-# AFTER (RECOMMENDED):
-monitor = ,3440x1440@165,0x0,1.15
+# OPTIONAL - Only if 1.25 works for you:
+# monitor = ,3440x1440@165,0x0,1.25
 ```
 
-**Why**:
-- `1.0` scaling means pixel-perfect rendering, but makes UI ~13% too large for comfortable viewing on 34"
-- `1.15` scaling makes everything 13% smaller while keeping text crisp and sharp
-- `1.20` is also excellent if you want even more screen real estate
+**Scaling Support**:
+- ✅ `1.0` - **Always works** (default)
+- ✅ `1.25` - Works on **most** systems
+- ✅ `1.5`, `2.0` - Usually work
+- ❌ `1.15`, `1.20` - **May cause "invalid scale" errors** on some systems
 
-**How to adjust**:
-1. Edit `hypr/config/monitor.conf`
-2. Change the last number in the monitor line
-3. Run `hyprctl reload` or restart Hyprland
-4. Try values between 1.10 and 1.25 to find your preference
+**How to safely test scaling**:
+1. Start Hyprland with default `1.0`
+2. Open terminal and test: `hyprctl keyword monitor ,3440x1440@165,0x0,1.25`
+3. If it works (no error), you can use that value in config
+4. If you get "invalid scale" error, stick with `1.0`
+
+**Alternative to scaling**: Since we've already reduced waybar and rofi font sizes, scaling at `1.0` should look good. If things still feel too large, reduce font sizes further rather than using problematic fractional scales.
 
 ---
 
