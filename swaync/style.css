@@ -15,15 +15,11 @@
     border: 3px solid @border-color;
     padding: 7px;
 }
-/* For Webkit-based browsers (used by SwayNC) */
-.notification-list-container::-webkit-scrollbar {
-    width: 0px; /* Hide the scrollbar */
-}
 
-/* Also for Firefox, though not necessary for SwayNC */
-.notification-list-container {
-    scrollbar-width: none; /* Hide the scrollbar for Firefox */
-}
+/* NOTE: GTK doesn't support webkit-scrollbar or scrollbar-width CSS properties
+   These have been removed to prevent parser errors. To hide scrollbar, use:
+   1. GTK theme settings, or
+   2. Widget-specific properties in config.json */
 
 .control-center .notification-row .notification-background {
     border-radius: 15px;
