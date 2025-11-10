@@ -7,6 +7,7 @@ A comprehensive Hyprland rice featuring dynamic theme switching, coordinated col
 - **Dynamic Theme Switching** - Switch between 9 pre-configured themes (Everforest, Gruvbox, Catppuccin, Dracula, etc.)
 - **Coordinated Theming** - Themes apply across Hyprland, Waybar, Kitty, Rofi, GTK, and Neovim
 - **Wallpaper System** - Theme-matched wallpapers with thumbnail previews via Rofi
+- **SDDM Login Screen** - Optional Everforest-themed display manager matching hyprlock
 - **NVIDIA GPU Support** - Pre-configured for dual GPU setups (AMD iGPU + NVIDIA dGPU)
 - **Ultrawide Monitor** - Optimized for 3440x1440 @ 165Hz displays
 
@@ -121,7 +122,17 @@ Rebuild initramfs:
 sudo mkinitcpio -P
 ```
 
-### 5. Start Hyprland
+### 5. (Optional) Install SDDM Login Screen
+For a beautiful Everforest-themed login screen matching your hyprlock:
+
+```bash
+chmod +x install_sddm.sh
+./install_sddm.sh
+```
+
+See [SDDM_SETUP.md](SDDM_SETUP.md) for complete installation guide and customization options.
+
+### 6. Start Hyprland
 ```bash
 Hyprland
 ```
@@ -194,6 +205,9 @@ Edit `hypr/config/autostart.conf` to customize what starts with Hyprland.
 - `Super + /` - Show all keybindings (Rofi menu)
 - `Super + L` - Lock screen (hyprlock)
 
+#### System
+- Power off, reboot, logout - Via SDDM power menu (if installed) or Rofi power menu
+
 ### Theme System
 
 The theme system coordinates colors across multiple applications:
@@ -264,7 +278,12 @@ hypr-config/
 │   ├── launcher.rasi              # Application launcher theme
 │   ├── wallpaper.rasi             # Wallpaper picker theme
 │   └── clipboard.rasi             # Clipboard manager theme
-└── setup.sh                       # Initial setup script
+├── sddm/
+│   ├── everforest.conf            # SDDM Everforest theme config
+│   └── WALLPAPER_OPTIONS.md       # Wallpaper syncing guide
+├── setup.sh                       # Initial setup script
+├── install_sddm.sh                # SDDM installation script
+└── SDDM_SETUP.md                  # Complete SDDM guide
 ```
 
 ## Troubleshooting
@@ -362,6 +381,25 @@ env = GDK_SCALE, 1.25
 sudo pacman -S ttf-font-awesome ttf-jetbrains-mono-nerd noto-fonts \
                noto-fonts-emoji ttf-liberation
 ```
+
+### SDDM Issues
+
+If you encounter issues with the SDDM login screen:
+- See the comprehensive [SDDM_SETUP.md](SDDM_SETUP.md) troubleshooting section
+- Quick fixes:
+  ```bash
+  # Test SDDM theme
+  cd /usr/share/sddm/themes/silent && sudo ./test.sh
+
+  # Sync wallpaper
+  ~/Scripts/sync_sddm_wallpaper.sh
+
+  # Check SDDM logs
+  sudo journalctl -u sddm -b
+
+  # Disable SDDM if needed
+  sudo systemctl disable sddm
+  ```
 
 ## Customization
 
