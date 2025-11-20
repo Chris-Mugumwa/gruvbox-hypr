@@ -21,6 +21,20 @@
    1. GTK theme settings, or
    2. Widget-specific properties in config.json */
 
+/* GTK Scrollbar Styling */
+scrollbar {
+    background-color: transparent;
+}
+scrollbar slider {
+    min-width: 2px;
+    min-height: 20px;
+    border-radius: 10px;
+    background-color: alpha(@fg-main, 0.2);
+}
+scrollbar slider:hover {
+    background-color: alpha(@fg-main, 0.3);
+}
+
 .control-center .notification-row .notification-background {
     border-radius: 15px;
     margin-top: 5px;
@@ -119,6 +133,9 @@ tooltip {
     padding: 6px;
     margin: 0 3px 0;
     transition: all .5s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .widget-buttons-grid > flowbox > flowboxchild > button:hover {
     background: @accent-hover;
